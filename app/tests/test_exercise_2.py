@@ -153,6 +153,10 @@ def test_areas_single_digit_district(postcode):
 def test_invalid_areas_single_digit_district(postcode):
     assert "error" in verify_areas_single_digit_district(postcode)
 
+@pytest.mark.parametrize("postcode", ["BBA AAL"])
+def test_invalid_areas_single_digit_district_2(postcode):
+    assert "error" in verify_areas_single_digit_district(postcode)
+
 #Areas with only double-digit districts: AB, LL, SO
 @pytest.mark.parametrize("postcode", ["LL71 8AJ"])
 def test_areas_double_digit_district(postcode):
@@ -160,6 +164,10 @@ def test_areas_double_digit_district(postcode):
     
 @pytest.mark.parametrize("postcode", ["LL7 8AJ"])
 def test_invalid_areas_double_digit_district(postcode):
+    assert "error" in verify_areas_double_digit_district(postcode)
+    
+@pytest.mark.parametrize("postcode", ["LLL AA"])
+def test_invalid_areas_double_digit_district_2(postcode):
     assert "error" in verify_areas_double_digit_district(postcode)
 
 #Areas with a district '0' (zero): BL, BS, CM, CR, FY, HA, PR, SL, SS (BS is the only area to have both a district 0 and a district 10)

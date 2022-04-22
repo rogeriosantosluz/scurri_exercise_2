@@ -94,9 +94,9 @@ def verify_areas_single_digit_district(postcode):
         app.logger.info(f"area: {area} district: {district}")
         if area not in areas:
             app.logger.info(f"area: {area} not in areas") 
-            return f"Postcode {postcode} has valid area {area} and district {district}"
+            return f"1. Postcode {postcode} has valid area {area} and district {district}"
         elif area in areas and len(district) == 1:
-            return f"Postcode {postcode} has valid area {area} and district {district}"
+            return f"2. Postcode {postcode} has valid area {area} and district {district}"
         else:
             return {"error": f"Postcode {postcode} has an area {area} that should have a single-digit district, {district} provided"}
     return {"error": f"Postcode {postcode} has invalid area or district"}

@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, flash, url_for, ses
 from .. import app
 from ..modules.postcodes import *
 
-validators = [verify_alphanumeric, verify_length, verify_space, verify_outward_code, verify_postcode_area_and_district,
+validators = [verify_alphanumeric, verify_length, verify_space, verify_outward_code, 
+              verify_postcode_area_and_district,
               verify_inward_code, verify_postcode_sector_and_unit, verify_areas_single_digit_district,
               verify_areas_double_digit_district]
 
