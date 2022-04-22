@@ -19,6 +19,24 @@ Show all tests written so our engineer can see your thought process.
 * export set FLASK_APP=app.webapp (PS> $env:FLASK_APP="webapp")
 * python3 -m flask run --host=0.0.0.0 (PS> flask run)
 
+# How to call the app locally
+
+Postman is the better option since it doesn't replace the "space" by "%20"
+
+![alt text](https://github.com/rogeriosantosluz/scurri_exercise_2/blob/main/app/tests/postman.png?raw=true)
+
+But you can also test using any browser in these two endpoint:
+
+http://localhost:5000/verify_postcode?postcode=BB10 2BF
+
+![alt text](https://github.com/rogeriosantosluz/scurri_exercise_2/blob/main/app/tests/chrome_1.png?raw=true)
+
+or
+
+http://localhost:5000/postcodes/BB10%202BF
+
+![alt text](https://github.com/rogeriosantosluz/scurri_exercise_2/blob/main/app/tests/chrome_2.png?raw=true)
+
 # Tests
 
 * coverage run -m pytest
