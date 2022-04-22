@@ -19,7 +19,7 @@ Show all tests written so our engineer can see your thought process.
 * export set FLASK_APP=app.webapp (PS> $env:FLASK_APP="webapp")
 * python3 -m flask run --host=0.0.0.0 (PS> flask run)
 
-#Tests
+# Tests
 
 * coverage run -m pytest
 * coverage report -m
@@ -29,9 +29,9 @@ There is a massive test called test_massive_validation that tests more than 100.
 and takes a long time to run. 
 Please uncomment lines 137-140 in the file scurri_exercise_2/app/tests/test_exercise_2.py if you wish to run that test.
 
-#Heroku Deploy
-heroku login
-heroku create scurri-exercise-2-app
-git push heroku master / git push heroku HEAD:master
-heroku config:set SECRET_KEY=scurri_892840328239048
-heroku logs --tail
+# Heroku Deploy
+* heroku login
+* heroku create scurri-exercise-2-app
+* git push heroku master / git push heroku HEAD:master
+* heroku config:set SECRET_KEY=scurri_892840328239048
+* heroku logs --tail
