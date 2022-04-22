@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, flash, url_for, ses
 from .. import app
 from ..modules.postcodes import *
 
-validators = [verify_alphanumeric, verify_length, verify_space, verify_outward_code]
+validators = [verify_alphanumeric, verify_length, verify_space, verify_outward_code, verify_postcode_area_and_district,
+              verify_inward_code, verify_postcode_sector_and_unit, verify_areas_single_digit_district,
+              verify_areas_double_digit_district]
 
 def validations(postcode, response_dict):
     for validator in validators:
@@ -22,10 +24,10 @@ def postcodes(postcode):
         return jsonify(response_dict), 400
     return jsonify(response_dict), 200
 
-@app.route("/verify_postcode", methods=["GET"])
+@app.route("/verify_postcode", methods=["GET", "POST"])
 def verify_postcode():
     if "postcode" not in request.args:
-        return jsonify({"postcode not passed"}), 400
+        return jsonify({"error": "postcode not passed"}), 400
     postcode = request.args["postcode"]
     app.logger.info(f"Postcode: {postcode}")
     response_dict = {"data": {"postcode": postcode, "validations": []}}
