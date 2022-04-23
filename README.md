@@ -42,9 +42,9 @@ http://localhost:5000/postcodes/BB10%202BF
 * coverage run -m pytest
 * coverage report -m
 
-There is a massive test called test_massive_validation that tests more than 100.000 postcodes 
+There is a massive test called test_massive_validation runs against 50.000 postcodes 
 (csv files from https://www.ordnancesurvey.co.uk/business-and-government/products/code-point-open.html) 
-and takes a long time to run. 
+and takes a long time to run (8 minutes). 
 Please uncomment lines 137-140 in the file scurri_exercise_2/app/tests/test_exercise_2.py if you wish to run that test.
 
 # Heroku Deploy

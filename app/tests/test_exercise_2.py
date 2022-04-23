@@ -67,6 +67,25 @@ def test_verify_postcode_no_postcode_status_code_400():
     url = f'/verify_postcode'
     response = client.get(url) 
     assert response.status_code == 400
+
+#Verify Format
+#-------------------------------------------------------------------
+#   Format          Coverage                                Example
+#-------------------------------------------------------------------
+#1. AA9A 9AA	WC postcode area; EC1–EC4, NW1W, SE1P, SW1	EC1A 1BB
+#2. A9A 9AA	    E1, N1, W1	                                W1A 0AX
+#3. A9 9AA	    B, E, G, L, M, N, S, W	                    M1 1AE
+#   A99 9AA	                                                B33 8TH
+#4. AA9 9AA     All other postcodes                         CR2 6XH
+#   AA99 9AA	                                            DN55 1PT
+#-------------------------------------------------------------------
+@pytest.mark.parametrize("postcode", ["EC1A 1BB", "W1A 0AX", "M1 1AE", "B33 8TH", "CR2 6XH", "DN55 1PT"])
+def test_valid_format(postcode):
+    assert "error" not in verify_format(postcode)
+    
+@pytest.mark.parametrize("postcode", ["EC1A1BB", "W1A AX", "M1 AE", "B3 8T", "CR2 6X", "DN55 1P"])
+def test_invalid_format(postcode):
+    assert "error" in verify_format(postcode)
     
 #The postcodes are alphanumeric, 
 def test_postcode_alphanumeric():
@@ -145,7 +164,7 @@ def test_massive_validation(postcode):
 """
 
 #Areas with only single-digit districts: BR, FY, HA, HD, HG, HR, HS, HX, JE, LD, SM, SR, WC, WN, ZE (although WC is always subdivided by a further letter, e.g. WC1A)
-@pytest.mark.parametrize("postcode", ["FY1 1AD"])
+@pytest.mark.parametrize("postcode", ["FY1 1AD", "WC1A 9RA"])
 def test_areas_single_digit_district(postcode):
     assert "error" not in verify_areas_single_digit_district(postcode)
     
@@ -170,18 +189,80 @@ def test_invalid_areas_double_digit_district(postcode):
 def test_invalid_areas_double_digit_district_2(postcode):
     assert "error" in verify_areas_double_digit_district(postcode)
 
-#Areas with a district '0' (zero): BL, BS, CM, CR, FY, HA, PR, SL, SS (BS is the only area to have both a district 0 and a district 10)
+#Areas with a district '0' (zero): BL, BS, CM, CR, FY, HA, PR, SL, SS 
+# (BS is the only area to have both a district 0 and a district 10)
+@pytest.mark.parametrize("postcode", ["BL0 9YQ", "BS10 5AA", "BS0 1ZZ", "BL9 9TL"])
+def test_areas_with_a_district_zero(postcode):
+    assert "error" not in verify_areas_with_a_district_zero(postcode)
+    
+@pytest.mark.parametrize("postcode", [invalid_inward_code])
+def test_invalid_areas_with_a_district_zero(postcode):
+    assert "error" in verify_areas_with_a_district_zero(postcode)
+    
+#The following central London single-digit districts have been further divided by 
+# inserting a letter after the digit and before the space: 
+# EC1–EC4 (but not EC50), SW1, W1, WC1, WC2 and parts of E1 (E1W), N1 (N1C and N1P), NW1 (NW1W) and SE1 (SE1P).
+@pytest.mark.parametrize("postcode", ["BL0 9YQ", "EC1Y 8SB", "SE1P 6QE"])
+def test_areas_single_digit_district_extra_letter(postcode):
+    assert "error" not in verify_areas_single_digit_district_extra_letter(postcode)
 
-#The following central London single-digit districts have been further divided by inserting a letter after the digit and before the space: EC1–EC4 (but not EC50), SW1, W1, WC1, WC2 and parts of E1 (E1W), N1 (N1C and N1P), NW1 (NW1W) and SE1 (SE1P).
+@pytest.mark.parametrize("postcode", ["BL0A 9YQ", invalid_inward_code])
+def test_invalid_areas_single_digit_district_extra_letter(postcode):
+    assert "error" in verify_areas_single_digit_district_extra_letter(postcode)
 
 #The letters Q, V and X are not used in the first position.
-
+@pytest.mark.parametrize("postcode", ["BL0 9YQ"])
+def test_valid_first_position(postcode):
+    assert "error" not in verify_first_position(postcode)
+    
+@pytest.mark.parametrize("postcode", ["Q0 9YQ"])
+def test_invalid_first_position(postcode):
+    assert "error" in verify_first_position(postcode)
+    
 #The letters I, J and Z are not used in the second position.
+@pytest.mark.parametrize("postcode", ["BL0 9YQ"])
+def test_valid_second_position(postcode):
+    assert "error" not in verify_second_position(postcode)
+    
+@pytest.mark.parametrize("postcode", ["BI1 9YQ"])
+def test_invalid_second_position(postcode):
+    assert "error" in verify_second_position(postcode)
 
-#The only letters to appear in the third position are A, B, C, D, E, F, G, H, J, K, P, S, T, U and W when the structure starts with A9A.
+#The only letters to appear in the third position are 
+# A, B, C, D, E, F, G, H, J, K, P, S, T, U and W when the structure starts with A9A.
+@pytest.mark.parametrize("postcode", ["W1A 0AX", "BII 9YQ"])
+def test_valid_third_position(postcode):
+    assert "error" not in verify_third_position(postcode)
+    
+@pytest.mark.parametrize("postcode", ["B9I 9YQ"])
+def test_invalid_third_position(postcode):
+    assert "error" in verify_third_position(postcode)
 
-#The only letters to appear in the fourth position are A, B, E, H, M, N, P, R, V, W, X and Y when the structure starts with AA9A.
+#The only letters to appear in the fourth position are 
+# A, B, E, H, M, N, P, R, V, W, X and Y when the structure starts with AA9A.
+@pytest.mark.parametrize("postcode", ["EC1A 1BB", "B9I 9YQ"])
+def test_valid_fourth_position(postcode):
+    assert "error" not in verify_fourth_position(postcode)
+    
+@pytest.mark.parametrize("postcode", ["EC1C 1BB"])
+def test_invalid_fourth_position(postcode):
+    assert "error" in verify_fourth_position(postcode)
+    
+#The final two letters do not use C, I, K, M, O or V, 
+# so as not to resemble digits or each other when hand-written.
+@pytest.mark.parametrize("postcode", ["EC1A 1BB", "B9I 9YQ"])
+def test_valid_unit(postcode):
+    assert "error" not in verify_unit(postcode)
+    
+@pytest.mark.parametrize("postcode", ["EC1C 1B0"])
+def test_invalid_unit(postcode):
+    assert "error" in verify_unit(postcode)
 
-#The final two letters do not use C, I, K, M, O or V, so as not to resemble digits or each other when hand-written.
-
+@pytest.mark.parametrize("postcode", special_postcode_list)
+def test_status_code_200_special_postcodes(postcode):
+    client = app.test_client()
+    url = f"/postcodes/{postcode}"
+    response = client.get(url)
+    assert response.status_code == 200
+    
 #Postcode sectors are one of ten digits: 0 to 9, with 0 only used once 9 has been used in a post town, save for Croydon and Newport (see above).
