@@ -48,6 +48,11 @@ and takes a long time to run (8 minutes).
 Please uncomment lines 137-140 in the file scurri_exercise_2/app/tests/test_exercise_2.py if you wish to run that test.
 
 # Heroku Deploy
+
+https://scurri-exercise-2-app.herokuapp.com/verify_postcode?postcode=BB10%202AL
+
+https://scurri-exercise-2-app.herokuapp.com/postcodes/BB10%202BF
+
 * heroku login
 * heroku create scurri-exercise-2-app
 * git push heroku master / git push heroku HEAD:master
